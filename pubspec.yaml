@@ -56,21 +56,37 @@ flavorizr:
     dev:
       app:
         name: "Cosmos Dev"
-        android:
-          applicationId: "com.paulyswen.cosmos.dev"
-        ios:
-          bundleId: "com.paulyswen.cosmos.dev"
+      android:
+        applicationId: "com.paulyswen.cosmos.dev"
+        icon: "assets/dev/app-icon.png"
+        adaptiveIcon:
+          foreground: "assets/dev/app-icon-foreground.png"
+          background: "assets/android/app-icon-background.png"
+      ios:
+        bundleId: "com.paulyswen.cosmos.dev"
+        icon: "assets/dev/app-icon.png"
+
     stg:
       app:
         name: "Cosmos Stg"
         android:
           applicationId: "com.paulyswen.cosmos.stg"
+          icon: "assets/stg/app-icon.png"
+          adaptiveIcon:
+            foreground: "assets/stg/app-icon-foreground.png"
+            background: "assets/android/app-icon-background.png"
         ios:
           bundleId: "com.paulyswen.cosmos.stg"
+          icon: "assets/stg/app-icon.png"
     prod:
       app:
         name: "Cosmos"
         android:
           applicationId: "com.paulyswen.cosmos"
+          icon: "assets/prod/app-icon.png"
+          adaptiveIcon:
+            foreground: "assets/prod/app-icon-foreground.png"
+            background: "assets/android/app-icon-background.png"
         ios:
           bundleId: "com.paulyswen.cosmos"
+          icon: "assets/prod/app-icon.png"
