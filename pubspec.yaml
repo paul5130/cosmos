@@ -16,6 +16,7 @@ dev_dependencies:
   flutter_lints: ^5.0.0
   flutter_launcher_icons: ^0.14.3
   flutter_native_splash: ^2.4.4
+  flutter_flavorizr: ^2.2.3
 
 flutter:
   uses-material-design: true
@@ -44,3 +45,32 @@ flutter_native_splash:
   color_web: "#ffffff"
   color_dark_web: "#121212"
   image: "assets/android/app-icon-foreground.png"
+
+flavorizr:
+  ide: "vscode"
+  app:
+    android:
+      flavorDimensions: "flavor-type"
+  
+  flavors:
+    dev:
+      app:
+        name: "Cosmos Dev"
+        android:
+          applicationId: "com.paulyswen.cosmos.dev"
+        ios:
+          bundleId: "com.paulyswen.cosmos.dev"
+    stg:
+      app:
+        name: "Cosmos Stg"
+        android:
+          applicationId: "com.paulyswen.cosmos.stg"
+        ios:
+          bundleId: "com.paulyswen.cosmos.stg"
+    prod:
+      app:
+        name: "Cosmos"
+        android:
+          applicationId: "com.paulyswen.cosmos"
+        ios:
+          bundleId: "com.paulyswen.cosmos"
