@@ -1,4 +1,4 @@
-package com.example.cosmos
+package com.paulyswen.cosmos
 
 import io.flutter.embedding.android.FlutterActivity
 
