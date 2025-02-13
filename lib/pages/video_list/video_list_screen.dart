@@ -1,5 +1,6 @@
 import 'package:cosmos/pages/video_list/providers/video_list_provider.dart';
 import 'package:cosmos/pages/video_list/widgets/video_grid_view.dart';
+import 'package:cosmos/pages/video_player/video_player_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -29,7 +30,15 @@ class VideoListScreen extends ConsumerWidget {
                       Expanded(
                         child: VideoGridView(
                           videoList: videoList,
-                          onVideoDetailScene: (video) {},
+                          onVideoDetailScene: (video) {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => VideoPlayerScreen(
+                                  video: video,
+                                ),
+                              ),
+                            );
+                          },
                         ),
                       )
                     ],
