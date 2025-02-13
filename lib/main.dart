@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'pages/video_list/video_list_screen.dart';
+
 Future<void> runMainApp() async {
   runApp(
     ProviderScope(
-      child: MainApp(),
+      child: MaterialApp(
+        home: VideoListScreen(),
+      ),
     ),
   );
 }
