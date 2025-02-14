@@ -1,5 +1,6 @@
 import 'package:cosmos/model/hehe_video.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:video_player/video_player.dart';
 
@@ -17,26 +18,52 @@ class VideoPlayerScreen extends ConsumerStatefulWidget {
 
 class _VideoPlayerScreenState extends ConsumerState<VideoPlayerScreen> {
   late VideoPlayerController _controller;
+  bool _isBuffering = false;
+  bool _isFullScreen = false;
   @override
   void initState() {
     super.initState();
     _controller = VideoPlayerController.networkUrl(
       Uri.parse(widget.video.videoUrl),
-    )..initialize().then(
+    )
+      ..addListener(_voidListener)
+      ..initialize().then(
         (_) {
           setState(() {});
+          _controller.play();
         },
       );
   }
 
+  void _voidListener() {
+    final isBuffering = _controller.value.isBuffering;
+    if (_isBuffering != isBuffering) {
+      setState(() {
+        _isBuffering = isBuffering;
+      });
+    }
+    if (_controller.value.position >= _controller.value.duration) {
+      setState(() {});
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
+    if (isLandscape) {
+      _enterFullScreen();
+    } else {
+      _exitFullScreen();
+    }
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          widget.video.name,
-        ),
-      ),
+      appBar: _isFullScreen
+          ? null
+          : AppBar(
+              title: Text(
+                widget.video.name,
+              ),
+            ),
       body: Center(
         child: _controller.value.isInitialized
             ? AspectRatio(
@@ -45,25 +72,38 @@ class _VideoPlayerScreenState extends ConsumerState<VideoPlayerScreen> {
               )
             : CircularProgressIndicator(),
       ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(
-          _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
-        ),
-        onPressed: () {
-          setState(
-            () {
-              _controller.value.isPlaying
-                  ? _controller.pause()
-                  : _controller.play();
-            },
-          );
-        },
-      ),
     );
+  }
+
+  void _enterFullScreen() {
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+    setState(() {
+      _isFullScreen = true;
+    });
+  }
+
+  void _exitFullScreen() {
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+    setState(() {
+      _isFullScreen = false;
+    });
   }
 
   @override
   void dispose() {
+    _controller.removeListener(_voidListener);
     _controller.dispose();
     super.dispose();
   }
