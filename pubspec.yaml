@@ -5,6 +5,8 @@ environment:
   sdk: '^3.6.1'
 description: A new Flutter project.
 dependencies:
+  audio_service: ^0.18.17
+  background_downloader: ^8.9.4
   copy_with_extension: '^6.0.1'
   dio: '^5.8.0+1'
   equatable: '^2.0.7'
@@ -13,6 +15,7 @@ dependencies:
   flutter_riverpod: '^2.6.1'
   freezed_annotation: '^2.4.4'
   json_annotation: '^4.9.0'
+  just_audio: ^0.9.46
   path_provider: '^2.1.5'
   riverpod_annotation: '^2.6.1'
   video_player: ^2.9.2
