@@ -1,3 +1,5 @@
+import 'package:audio_service/audio_service.dart';
+import 'package:cosmos/pages/video_player/audio_player_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -19,7 +21,18 @@ class Logger extends ProviderObserver {
   }
 }
 
+late AudioHandler audioHandler;
+
 Future<void> runMainApp() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  audioHandler = await AudioService.init(
+    builder: () => AudioPlayerHandler(),
+    config: AudioServiceConfig(
+      androidNotificationChannelId: 'com.paulyswen.channel.audio',
+      androidNotificationChannelName: 'Music playback',
+      androidNotificationOngoing: true,
+    ),
+  );
   runApp(
     ProviderScope(
       observers: [
@@ -30,19 +43,4 @@ Future<void> runMainApp() async {
       ),
     ),
   );
-}
-
-class MainApp extends StatelessWidget {
-  const MainApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
-        ),
-      ),
-    );
-  }
 }
