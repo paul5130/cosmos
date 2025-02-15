@@ -1,5 +1,5 @@
 import 'package:audio_service/audio_service.dart';
-import 'package:cosmos/pages/video_player/audio_player_handler.dart';
+import 'package:cosmos/pages/video_player/audio/audio_player_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -22,14 +22,16 @@ class Logger extends ProviderObserver {
 }
 
 late AudioHandler audioHandler;
+late AudioPlayerHandler audioPlayerHandler;
 
 Future<void> runMainApp() async {
   WidgetsFlutterBinding.ensureInitialized();
+  audioPlayerHandler = AudioPlayerHandler();
   audioHandler = await AudioService.init(
-    builder: () => AudioPlayerHandler(),
+    builder: () => audioPlayerHandler,
     config: AudioServiceConfig(
       androidNotificationChannelId: 'com.paulyswen.channel.audio',
-      androidNotificationChannelName: 'Music playback',
+      androidNotificationChannelName: 'He He Videos',
       androidNotificationOngoing: true,
     ),
   );

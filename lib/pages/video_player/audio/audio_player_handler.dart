@@ -1,33 +1,39 @@
 import 'package:audio_service/audio_service.dart';
+import 'package:cosmos/model/hehe_video.dart';
 
 import 'package:just_audio/just_audio.dart';
 
 class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
-  static final _item = MediaItem(
-    id: 'https://drive.usercontent.google.com/download?id=1qT387MGL_1IWotbCuOYFZBxhGObveDFM',
-    album: "Science Friday",
-    title: "A Salute To Head-Scratching Science",
-    artist: "Science Friday and WNYC Studios",
-    duration: const Duration(milliseconds: 5739820),
-    artUri: Uri.parse(
-        'https://media.wnyc.org/i/1400/1400/l/80/1/ScienceFriday_WNYCStudios_1400.jpg'),
-  );
+  // static final _item = MediaItem(
+  //   id: 'https://drive.usercontent.google.com/download?id=1qT387MGL_1IWotbCuOYFZBxhGObveDFM',
+  //   album: "Science Friday",
+  //   title: "A Salute To Head-Scratching Science",
+  //   artist: "Science Friday and WNYC Studios",
+  //   // duration: const Duration(milliseconds: 5739820),
+  //   artUri: Uri.parse(
+  //       'https://media.wnyc.org/i/1400/1400/l/80/1/ScienceFriday_WNYCStudios_1400.jpg'),
+  // );
 
   final _player = AudioPlayer();
-
-  /// Initialise our audio handler.
   AudioPlayerHandler() {
-    // So that our clients (the Flutter UI and the system notification) know
-    // what state to display, here we set up our audio handler to broadcast all
-    // playback state changes as they happen via playbackState...
     _player.playbackEventStream.map(_transformEvent).pipe(playbackState);
     // ... and also the current media item via mediaItem.
-    mediaItem.add(_item);
+    // mediaItem.add(_item);
 
     // Load the player.
-    _player.setAudioSource(AudioSource.uri(Uri.parse(_item.id)));
+    // _player.setAudioSource(AudioSource.uri(Uri.parse(_item.id)));
   }
-
+  Future<void> setupAudio(
+    HeHeVideo video,
+  ) async {
+    final mediaItem = MediaItem(
+      id: video.videoUrl,
+      title: video.name,
+      artUri: Uri.parse(video.imageUrl),
+    );
+    this.mediaItem.add(mediaItem);
+    _player.setAudioSource(AudioSource.uri(Uri.parse(video.videoUrl)));
+  }
   // In this simple example, we handle only 4 actions: play, pause, seek and
   // stop. Any button press from the Flutter UI, notification, lock screen or
   // headset will be routed through to these 4 methods so that you can handle
