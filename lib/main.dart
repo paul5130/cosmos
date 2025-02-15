@@ -41,6 +41,7 @@ Future<void> runMainApp() async {
         Logger(),
       ],
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         home: VideoListScreen(),
       ),
     ),

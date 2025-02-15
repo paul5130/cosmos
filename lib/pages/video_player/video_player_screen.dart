@@ -13,9 +13,11 @@ import 'package:video_player/video_player.dart';
 class VideoPlayerScreen extends ConsumerStatefulWidget {
   const VideoPlayerScreen({
     super.key,
-    required this.video,
+    required this.videoList,
+    required this.index,
   });
-  final HeHeVideo video;
+  final List<HeHeVideo> videoList;
+  final int index;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -29,12 +31,13 @@ class _VideoPlayerScreenState extends ConsumerState<VideoPlayerScreen>
   // bool _isDownloading = false;
   bool _isInitialized = false;
   Duration _backgroundPosition = Duration.zero;
+  late int _currentIndex;
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _currentIndex = widget.index;
     _checkOrDownloadVideo();
-    // audioPlayerHandler.setupAudio(widget.video);
   }
 
   Future<void> _initializeVideo() async {
@@ -52,9 +55,14 @@ class _VideoPlayerScreenState extends ConsumerState<VideoPlayerScreen>
     _controller!.play();
     // _controller!.value.duration;
     audioPlayerHandler.setupAudio(
-      widget.video,
+      widget.videoList[_currentIndex],
       _controller!.value.duration,
     );
+    _controller!.addListener(() {
+      if (_controller!.value.position >= _controller!.value.duration) {
+        _playNextVideo();
+      }
+    });
 
     /// 要做背景切換播放模式--------
     // _controller
@@ -66,15 +74,62 @@ class _VideoPlayerScreenState extends ConsumerState<VideoPlayerScreen>
     //   });
   }
 
+  Future<void> _playNextVideo() async {
+    if (_currentIndex + 1 < widget.videoList.length) {
+      _currentIndex++;
+      debugPrint('Playing next video: ${widget.videoList[_currentIndex].name}');
+      _isInitialized = false;
+      _checkOrDownloadVideo();
+    } else {
+      debugPrint('Played all videos');
+    }
+  }
+
   Future<void> _checkOrDownloadVideo() async {
-    final localFile = await _getLocalFile(widget.video.id);
+    final localFile = await _getLocalFile(widget.videoList[_currentIndex].id);
     if (await localFile.exists()) {
       _localFilePath = localFile.path;
       _initializeVideo();
     } else {
       _downloadAndPlay(
-        widget.video,
+        widget.videoList[_currentIndex],
       );
+    }
+    _preDownloadNextVideo();
+  }
+
+  Future<void> _preDownloadNextVideo() async {
+    final nextIndex = _currentIndex + 1;
+    if (nextIndex < widget.videoList.length) {
+      final nextVideo = widget.videoList[nextIndex];
+      final localFile = await _getLocalFile(nextVideo.id);
+      if (!await localFile.exists()) {
+        debugPrint('predownloading video: ${nextVideo.name}');
+        _downloadVideo(nextVideo);
+      } else {
+        debugPrint('${nextVideo.name} exists, skip download.');
+      }
+    }
+  }
+
+  Future<void> _downloadVideo(HeHeVideo video) async {
+    // final file = await _getLocalFile(video.id);
+    final task = DownloadTask(
+        url: video.videoUrl,
+        filename: '${video.id}.mp4',
+        baseDirectory: BaseDirectory.applicationDocuments,
+        updates: Updates.statusAndProgress);
+    final result = await FileDownloader().download(
+      task,
+      onProgress: (progress) {
+        int percentage = (progress * 100).toInt();
+        debugPrint('Download ${video.name} progress: $percentage%');
+      },
+    );
+    if (result.status == TaskStatus.complete) {
+      debugPrint('${video.name} downloaded');
+    } else {
+      debugPrint('Failed to download ${video.name} - ${result.status}');
     }
   }
 
@@ -118,7 +173,10 @@ class _VideoPlayerScreenState extends ConsumerState<VideoPlayerScreen>
     // audioPlayerHandler.stop();
     WidgetsBinding.instance.removeObserver(this);
     // _controller!.removeListener(_videoListener);
-    _controller!.dispose();
+    if (_controller != null) {
+      _controller!.dispose();
+    }
+
     audioPlayerHandler.stop();
     super.dispose();
   }
@@ -127,7 +185,7 @@ class _VideoPlayerScreenState extends ConsumerState<VideoPlayerScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.video.name),
+        title: Text(widget.videoList[_currentIndex].name),
       ),
       backgroundColor: Colors.black,
       body: SafeArea(
@@ -152,7 +210,7 @@ class _VideoPlayerScreenState extends ConsumerState<VideoPlayerScreen>
         debugPrint('Stop video controller');
         audioPlayerHandler
             .playAudio(
-          widget.video,
+          widget.videoList[_currentIndex],
           _backgroundPosition,
         )
             .then((_) {

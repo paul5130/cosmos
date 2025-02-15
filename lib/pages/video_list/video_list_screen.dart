@@ -31,10 +31,12 @@ class VideoListScreen extends ConsumerWidget {
                         child: VideoGridView(
                           videoList: videoList,
                           onVideoDetailScene: (video) {
+                            final index = videoList.indexOf(video);
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (context) => VideoPlayerScreen(
-                                  video: video,
+                                  videoList: videoList,
+                                  index: index,
                                 ),
                               ),
                             );
