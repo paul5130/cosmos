@@ -6,7 +6,7 @@ part of 'video_list_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$fetchVideoListHash() => r'e0525afe78afd34109e9362efea498e0c13bc3bf';
+String _$fetchVideoListHash() => r'ec94c171e231f39ae434fc60482c23f993c75110';
 
 /// See also [fetchVideoList].
 @ProviderFor(fetchVideoList)
