@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:audio_service/audio_service.dart';
 import 'package:cosmos/model/hehe_video.dart';
+import 'package:flutter/foundation.dart';
 
 import 'package:just_audio/just_audio.dart';
+import 'package:path_provider/path_provider.dart';
 
 class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
   // static final _item = MediaItem(
@@ -17,22 +21,33 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
   final _player = AudioPlayer();
   AudioPlayerHandler() {
     _player.playbackEventStream.map(_transformEvent).pipe(playbackState);
-    // ... and also the current media item via mediaItem.
-    // mediaItem.add(_item);
-
-    // Load the player.
-    // _player.setAudioSource(AudioSource.uri(Uri.parse(_item.id)));
   }
   Future<void> setupAudio(
     HeHeVideo video,
+    Duration duration,
   ) async {
+    final directory = await getApplicationDocumentsDirectory();
+    final file = File('${directory.path}/${video.id}.mp4');
     final mediaItem = MediaItem(
-      id: video.videoUrl,
+      id: video.id,
       title: video.name,
       artUri: Uri.parse(video.imageUrl),
+      duration: duration,
     );
     this.mediaItem.add(mediaItem);
-    _player.setAudioSource(AudioSource.uri(Uri.parse(video.videoUrl)));
+    _player.setAudioSource(AudioSource.file(file.path));
+  }
+
+  Future<void> playAudio(
+    HeHeVideo video,
+    Duration position,
+  ) async {
+    // final directory = await getApplicationDocumentsDirectory();
+    // final file = File('${directory.path}/${video.id}.mp4');
+    // _player.setAudioSource(AudioSource.file(file.path));
+    debugPrint('play audio in position: $position');
+    await _player.seek(position);
+    await _player.play();
   }
   // In this simple example, we handle only 4 actions: play, pause, seek and
   // stop. Any button press from the Flutter UI, notification, lock screen or
@@ -50,6 +65,8 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
 
   @override
   Future<void> stop() => _player.stop();
+
+  Future<Duration> getCurrentPosition() async => _player.position;
 
   /// Transform a just_audio event into an audio_service state.
   ///
