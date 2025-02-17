@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 
-import '../../../model/hehe_video.dart';
+import '../../../model/hehe_media.dart';
 
 class VideoCard extends StatelessWidget {
   const VideoCard({
-    required this.heheVideo,
+    required this.media,
     required this.onPressed,
     required this.onFavoritePressed,
     super.key,
   });
-  final HeHeVideo heheVideo;
-  final void Function(HeHeVideo) onPressed;
+  final HeHeMedia media;
+  final void Function(HeHeMedia) onPressed;
   final VoidCallback onFavoritePressed;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => onPressed(heheVideo),
+      onTap: () => onPressed(media),
       child: Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(4.0),
@@ -30,7 +30,7 @@ class VideoCard extends StatelessWidget {
                   borderRadius:
                       const BorderRadius.vertical(top: Radius.circular(4.0)),
                   child: Image.network(
-                    heheVideo.imageUrl,
+                    media.imageUrl ?? '',
                     fit: BoxFit.cover,
                     height: 120,
                     width: double.infinity,
@@ -52,7 +52,7 @@ class VideoCard extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Text(
-                  heheVideo.name,
+                  media.name,
                   style: const TextStyle(
                       fontSize: 16, fontWeight: FontWeight.bold),
                   maxLines: 2,

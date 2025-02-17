@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../model/hehe_video.dart';
+import '../../../model/hehe_media.dart';
 import 'video_card.dart';
 
 class VideoGridView extends StatelessWidget {
@@ -9,8 +9,8 @@ class VideoGridView extends StatelessWidget {
     required this.onVideoDetailScene,
     super.key,
   });
-  final List<HeHeVideo> videoList;
-  final void Function(HeHeVideo) onVideoDetailScene;
+  final List<HeHeMedia> videoList;
+  final void Function(HeHeMedia) onVideoDetailScene;
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
@@ -29,7 +29,7 @@ class VideoGridView extends StatelessWidget {
       itemBuilder: (context, index) {
         final video = videoList[index];
         return VideoCard(
-          heheVideo: video,
+          media: video,
           onPressed: onVideoDetailScene,
           onFavoritePressed: () {},
         );
@@ -47,6 +47,3 @@ class VideoGridView extends StatelessWidget {
     }
   }
 }
-
-// final jsonString =
-//           await ref.watch(gistClientProvider).fetchJsonTemplate();

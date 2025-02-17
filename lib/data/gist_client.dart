@@ -5,9 +5,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'gist_client.g.dart';
 
-// https://gist.githubusercontent.com/paul5130/8efa626c91c57309d5c915643dafba15/raw/media_list.json
 const _gistUrl =
-    'https://gist.githubusercontent.com/paul5130/b774657abe879a95d6a1100b066696f0/raw/85a892f9b490e668799262ef07a4b0e71c86dbd8/video_list.json';
+    'https://gist.githubusercontent.com/paul5130/8efa626c91c57309d5c915643dafba15/raw/media_list.json';
 
 class GistClient {
   const GistClient({
@@ -15,7 +14,7 @@ class GistClient {
   });
   final Dio dio;
 
-  Future<String> fetchVideoListJson() async {
+  Future<String> fetchMediaListJson() async {
     final response = await dio.get(_gistUrl);
     return response.data;
   }

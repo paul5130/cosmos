@@ -1,11 +1,13 @@
 import 'dart:io';
 
 import 'package:audio_service/audio_service.dart';
-import 'package:cosmos/model/hehe_video.dart';
+
 import 'package:flutter/foundation.dart';
 
 import 'package:just_audio/just_audio.dart';
 import 'package:path_provider/path_provider.dart';
+
+import '../../../model/hehe_media.dart';
 
 class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
   // static final _item = MediaItem(
@@ -23,15 +25,15 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
     _player.playbackEventStream.map(_transformEvent).pipe(playbackState);
   }
   Future<void> setupAudio(
-    HeHeVideo video,
+    HeHeMedia media,
     Duration duration,
   ) async {
     final directory = await getApplicationDocumentsDirectory();
-    final file = File('${directory.path}/${video.id}.mp4');
+    final file = File('${directory.path}/${media.videoId!}.mp4');
     final mediaItem = MediaItem(
-      id: video.id,
-      title: video.name,
-      artUri: Uri.parse(video.imageUrl),
+      id: media.videoId!,
+      title: media.name,
+      // artUri: Uri.parse(media.imageUrl),
       duration: duration,
     );
     this.mediaItem.add(mediaItem);
@@ -39,7 +41,7 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
   }
 
   Future<void> playAudio(
-    HeHeVideo video,
+    HeHeMedia video,
     Duration position,
   ) async {
     // final directory = await getApplicationDocumentsDirectory();

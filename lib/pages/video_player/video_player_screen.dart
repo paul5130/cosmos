@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:background_downloader/background_downloader.dart';
 import 'package:cosmos/main.dart';
-import 'package:cosmos/model/hehe_video.dart';
+
 import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,13 +10,15 @@ import 'package:path_provider/path_provider.dart';
 
 import 'package:video_player/video_player.dart';
 
+import '../../model/hehe_media.dart';
+
 class VideoPlayerScreen extends ConsumerStatefulWidget {
   const VideoPlayerScreen({
     super.key,
     required this.videoList,
     required this.index,
   });
-  final List<HeHeVideo> videoList;
+  final List<HeHeMedia> videoList;
   final int index;
 
   @override
@@ -28,7 +30,6 @@ class _VideoPlayerScreenState extends ConsumerState<VideoPlayerScreen>
     with WidgetsBindingObserver {
   VideoPlayerController? _controller;
   String? _localFilePath;
-  // bool _isDownloading = false;
   bool _isInitialized = false;
   Duration _backgroundPosition = Duration.zero;
   late int _currentIndex;
@@ -86,7 +87,8 @@ class _VideoPlayerScreenState extends ConsumerState<VideoPlayerScreen>
   }
 
   Future<void> _checkOrDownloadVideo() async {
-    final localFile = await _getLocalFile(widget.videoList[_currentIndex].id);
+    final localFile =
+        await _getLocalFile(widget.videoList[_currentIndex].videoId!);
     if (await localFile.exists()) {
       _localFilePath = localFile.path;
       _initializeVideo();
@@ -102,7 +104,7 @@ class _VideoPlayerScreenState extends ConsumerState<VideoPlayerScreen>
     final nextIndex = _currentIndex + 1;
     if (nextIndex < widget.videoList.length) {
       final nextVideo = widget.videoList[nextIndex];
-      final localFile = await _getLocalFile(nextVideo.id);
+      final localFile = await _getLocalFile(nextVideo.videoId!);
       if (!await localFile.exists()) {
         debugPrint('predownloading video: ${nextVideo.name}');
         _downloadVideo(nextVideo);
@@ -112,11 +114,11 @@ class _VideoPlayerScreenState extends ConsumerState<VideoPlayerScreen>
     }
   }
 
-  Future<void> _downloadVideo(HeHeVideo video) async {
+  Future<void> _downloadVideo(HeHeMedia video) async {
     // final file = await _getLocalFile(video.id);
     final task = DownloadTask(
-        url: video.videoUrl,
-        filename: '${video.id}.mp4',
+        url: video.videoUrl!,
+        filename: '${video.videoId}.mp4',
         baseDirectory: BaseDirectory.applicationDocuments,
         updates: Updates.statusAndProgress);
     final result = await FileDownloader().download(
@@ -134,15 +136,15 @@ class _VideoPlayerScreenState extends ConsumerState<VideoPlayerScreen>
   }
 
   Future<void> _downloadAndPlay(
-    HeHeVideo video,
+    HeHeMedia video,
   ) async {
     // setState(() {
     //   _isDownloading = true;
     // });
-    final file = await _getLocalFile(video.id);
+    final file = await _getLocalFile(video.videoId!);
     final task = DownloadTask(
-        url: video.videoUrl,
-        filename: '${video.id}.mp4',
+        url: video.videoUrl!,
+        filename: '${video.videoId}.mp4',
         baseDirectory: BaseDirectory.applicationDocuments,
         updates: Updates.statusAndProgress);
     final result = await FileDownloader().download(

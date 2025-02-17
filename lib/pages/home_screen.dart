@@ -1,15 +1,18 @@
-import 'package:cosmos/pages/video_list/audio_list_screen.dart';
-import 'package:cosmos/pages/video_list/video_list_screen.dart';
+import 'package:cosmos/pages/media_list/audio_list_screen.dart';
+import 'package:cosmos/pages/media_list/video_list_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class HomeScreen extends StatefulWidget {
+import 'media_list/providers/media_list_provider.dart';
+
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen>
+class _HomeScreenState extends ConsumerState<HomeScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   @override
@@ -29,31 +32,39 @@ class _HomeScreenState extends State<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('Cosmoser'),
-          bottom: TabBar(
-            controller: _tabController,
-            tabs: [
-              Tab(
-                icon: Icon(Icons.audiotrack_rounded),
-                text: 'audio list',
+    final mediaListAsync = ref.watch(fetchMediaListProvider);
+
+    return Scaffold(
+      body: mediaListAsync.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, stackTrace) => Center(child: Text("讀取失敗: $error")),
+        data: (mediaList) => NestedScrollView(
+          headerSliverBuilder: (context, innerBoxIsScrolled) => [
+            SliverAppBar(
+              title: const Text('Cosmoser'),
+              pinned: true,
+              floating: false,
+              bottom: TabBar(
+                controller: _tabController,
+                tabs: const [
+                  Tab(icon: Icon(Icons.audiotrack_rounded), text: '音訊列表'),
+                  Tab(icon: Icon(Icons.video_library_rounded), text: '影片列表'),
+                ],
               ),
-              Tab(
-                icon: Icon(Icons.video_library_rounded),
-                text: 'video list',
+            ),
+          ],
+          body: TabBarView(
+            controller: _tabController,
+            children: [
+              AudioListScreen(
+                audioList: mediaList,
+              ),
+              VideoListScreen(
+                videoList:
+                    mediaList.where((media) => media.videoId != null).toList(),
               ),
             ],
           ),
-        ),
-        body: TabBarView(
-          controller: _tabController,
-          children: const [
-            AudioListScreen(),
-            VideoListScreen(),
-          ],
         ),
       ),
     );
