@@ -10,9 +10,6 @@ class VideoListScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Video List'),
-      ),
       body: Consumer(
         builder: (context, ref, _) {
           final videoListAsync = ref.watch(fetchVideoListProvider);

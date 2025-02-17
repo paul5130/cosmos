@@ -1,9 +1,8 @@
 import 'package:audio_service/audio_service.dart';
+import 'package:cosmos/pages/home_screen.dart';
 import 'package:cosmos/pages/video_player/audio/audio_player_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import 'pages/video_list/video_list_screen.dart';
 
 class Logger extends ProviderObserver {
   @override
@@ -42,7 +41,7 @@ Future<void> runMainApp() async {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: VideoListScreen(),
+        home: HomeScreen(),
       ),
     ),
   );
