@@ -2,59 +2,50 @@ import 'dart:io';
 
 import 'package:audio_service/audio_service.dart';
 
-import 'package:flutter/foundation.dart';
-
 import 'package:just_audio/just_audio.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../../../model/hehe_media.dart';
 
 class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
-  // static final _item = MediaItem(
-  //   id: 'https://drive.usercontent.google.com/download?id=1qT387MGL_1IWotbCuOYFZBxhGObveDFM',
-  //   album: "Science Friday",
-  //   title: "A Salute To Head-Scratching Science",
-  //   artist: "Science Friday and WNYC Studios",
-  //   // duration: const Duration(milliseconds: 5739820),
-  //   artUri: Uri.parse(
-  //       'https://media.wnyc.org/i/1400/1400/l/80/1/ScienceFriday_WNYCStudios_1400.jpg'),
-  // );
-
   final _player = AudioPlayer();
   AudioPlayerHandler() {
-    _player.playbackEventStream.map(_transformEvent).pipe(playbackState);
-  }
-  Future<void> setupAudio(
-    HeHeMedia media,
-    Duration duration,
-  ) async {
-    final directory = await getApplicationDocumentsDirectory();
-    final file = File('${directory.path}/${media.videoId!}.mp4');
-    final mediaItem = MediaItem(
-      id: media.videoId!,
-      title: media.name,
-      // artUri: Uri.parse(media.imageUrl),
-      duration: duration,
-    );
-    this.mediaItem.add(mediaItem);
-    _player.setAudioSource(AudioSource.file(file.path));
+    _player.playbackEventStream
+        .map(
+          _transformEvent,
+        )
+        .pipe(
+          playbackState,
+        );
   }
 
-  Future<void> playAudio(
-    HeHeMedia video,
-    Duration position,
+  MediaItem _toMediaitem(HeHeMedia media, Duration duration) => MediaItem(
+        id: media.audioId != null ? media.audioId! : media.videoId!,
+        title: media.name,
+        artUri: media.imageUrl != null
+            ? Uri.parse(
+                media.imageUrl!,
+              )
+            : null,
+        duration: duration,
+      );
+  Future<void> setupAudio(
+    HeHeMedia media,
   ) async {
-    // final directory = await getApplicationDocumentsDirectory();
-    // final file = File('${directory.path}/${video.id}.mp4');
-    // _player.setAudioSource(AudioSource.file(file.path));
-    debugPrint('play audio in position: $position');
-    await _player.seek(position);
+    final directory = await getApplicationDocumentsDirectory();
+    final filename =
+        media.audioId != null ? '${media.audioId}.mp3' : '${media.videoId}.mp4';
+    final file = File('${directory.path}/$filename');
+
+    await _player.setAudioSource(AudioSource.file(file.path));
+
+    final duration = _player.duration;
+    if (duration != null) {
+      final currentMediaItem = _toMediaitem(media, duration);
+      mediaItem.add(currentMediaItem);
+    }
     await _player.play();
   }
-  // In this simple example, we handle only 4 actions: play, pause, seek and
-  // stop. Any button press from the Flutter UI, notification, lock screen or
-  // headset will be routed through to these 4 methods so that you can handle
-  // your audio playback logic in one place.
 
   @override
   Future<void> play() => _player.play();

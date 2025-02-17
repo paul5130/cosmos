@@ -1,15 +1,12 @@
 import 'dart:io';
 
 import 'package:background_downloader/background_downloader.dart';
-import 'package:cosmos/main.dart';
-
 import 'package:flutter/material.dart';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
-
 import 'package:video_player/video_player.dart';
 
+import '../../main.dart';
 import '../../model/hehe_media.dart';
 
 class VideoPlayerScreen extends ConsumerStatefulWidget {
@@ -31,7 +28,6 @@ class _VideoPlayerScreenState extends ConsumerState<VideoPlayerScreen>
   VideoPlayerController? _controller;
   String? _localFilePath;
   bool _isInitialized = false;
-  Duration _backgroundPosition = Duration.zero;
   late int _currentIndex;
   @override
   void initState() {
@@ -55,10 +51,7 @@ class _VideoPlayerScreenState extends ConsumerState<VideoPlayerScreen>
     // _controller!.setVolume(0.0);
     _controller!.play();
     // _controller!.value.duration;
-    audioPlayerHandler.setupAudio(
-      widget.videoList[_currentIndex],
-      _controller!.value.duration,
-    );
+
     _controller!.addListener(() {
       if (_controller!.value.position >= _controller!.value.duration) {
         _playNextVideo();
@@ -203,136 +196,34 @@ class _VideoPlayerScreenState extends ConsumerState<VideoPlayerScreen>
     );
   }
 
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused) {
-      if (_controller != null && _controller!.value.isPlaying) {
-        _backgroundPosition = _controller!.value.position;
-        _controller?.pause();
-        debugPrint('Stop video controller');
-        audioPlayerHandler
-            .playAudio(
-          widget.videoList[_currentIndex],
-          _backgroundPosition,
-        )
-            .then((_) {
-          debugPrint('audio is playing');
-        }).catchError((error) {
-          debugPrint('Failed to play audio: $error');
-        });
-      }
-    } else if (state == AppLifecycleState.resumed) {
-      audioPlayerHandler.getCurrentPosition().then((audioPosition) {
-        audioPlayerHandler.pause();
-        debugPrint('Stop audio player');
-        _controller?.seekTo(audioPosition);
-        debugPrint('play video in position: $audioPosition');
-        _controller?.play();
-      }).catchError((error) {
-        debugPrint('Failed to recover video : $error');
-      });
-    }
-  }
   // @override
-  // Widget build(BuildContext context) {
-  //   return Scaffold(
-  //     appBar: AppBar(
-  //       title: const Text('Audio Service Demo'),
-  //     ),
-  //     body: Center(
-  //       child: Column(
-  //         mainAxisAlignment: MainAxisAlignment.center,
-  //         children: [
-  //           // Show media item title
-  //           StreamBuilder<MediaItem?>(
-  //             stream: audioHandler.mediaItem,
-  //             builder: (context, snapshot) {
-  //               final mediaItem = snapshot.data;
-  //               return Text(mediaItem?.title ?? '');
-  //             },
-  //           ),
-  //           // Play/pause/stop buttons.
-  //           StreamBuilder<bool>(
-  //             stream: audioHandler.playbackState
-  //                 .map((state) => state.playing)
-  //                 .distinct(),
-  //             builder: (context, snapshot) {
-  //               final playing = snapshot.data ?? false;
-  //               return Row(
-  //                 mainAxisAlignment: MainAxisAlignment.center,
-  //                 children: [
-  //                   // _button(Icons.fast_rewind, audioHandler.rewind),
-  //                   if (playing)
-  //                     _button(Icons.pause, audioHandler.pause)
-  //                   else
-  //                     _button(Icons.play_arrow, audioHandler.play),
-  //                   // _button(Icons.stop, audioHandler.stop),
-  //                   // _button(Icons.fast_forward, audioHandler.fastForward),
-  //                 ],
-  //               );
-  //             },
-  //           ),
-  //           // A seek bar.
-  //           StreamBuilder<MediaState>(
-  //             stream: _mediaStateStream,
-  //             builder: (context, snapshot) {
-  //               final mediaState = snapshot.data;
-  //               return SeekBar(
-  //                 duration: mediaState?.mediaItem?.duration ?? Duration.zero,
-  //                 position: mediaState?.position ?? Duration.zero,
-  //                 onChangeEnd: (newPosition) {
-  //                   audioHandler.seek(newPosition);
-  //                 },
-  //               );
-  //             },
-  //           ),
-  //           // Display the processing state.
-  //           StreamBuilder<AudioProcessingState>(
-  //             stream: audioHandler.playbackState
-  //                 .map((state) => state.processingState)
-  //                 .distinct(),
-  //             builder: (context, snapshot) {
-  //               final processingState =
-  //                   snapshot.data ?? AudioProcessingState.idle;
-  //               return Text(
-  //                   // ignore: deprecated_member_use
-  //                   "Processing state: ${describeEnum(processingState)}");
-  //             },
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //   );
+  // void didChangeAppLifecycleState(AppLifecycleState state) {
+  //   if (state == AppLifecycleState.paused) {
+  //     if (_controller != null && _controller!.value.isPlaying) {
+  //       _backgroundPosition = _controller!.value.position;
+  //       _controller?.pause();
+  //       debugPrint('Stop video controller');
+  //       audioPlayerHandler
+  //           .playAudio(
+  //         widget.videoList[_currentIndex],
+  //         _backgroundPosition,
+  //       )
+  //           .then((_) {
+  //         debugPrint('audio is playing');
+  //       }).catchError((error) {
+  //         debugPrint('Failed to play audio: $error');
+  //       });
+  //     }
+  //   } else if (state == AppLifecycleState.resumed) {
+  //     audioPlayerHandler.getCurrentPosition().then((audioPosition) {
+  //       audioPlayerHandler.pause();
+  //       debugPrint('Stop audio player');
+  //       _controller?.seekTo(audioPosition);
+  //       debugPrint('play video in position: $audioPosition');
+  //       _controller?.play();
+  //     }).catchError((error) {
+  //       debugPrint('Failed to recover video : $error');
+  //     });
+  //   }
   // }
-
-  // void _enterFullScreen() {
-  //   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
-  //   SystemChrome.setPreferredOrientations([
-  //     DeviceOrientation.landscapeLeft,
-  //     DeviceOrientation.landscapeRight,
-  //     DeviceOrientation.portraitUp,
-  //     DeviceOrientation.portraitDown,
-  //   ]);
-  // }
-
-  // void _exitFullScreen() {
-  //   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-  //   SystemChrome.setPreferredOrientations([
-  //     DeviceOrientation.landscapeLeft,
-  //     DeviceOrientation.landscapeRight,
-  //     DeviceOrientation.portraitUp,
-  //     DeviceOrientation.portraitDown,
-  //   ]);
-  // }
-
-  // IconButton _button(IconData iconData, VoidCallback onPressed) => IconButton(
-  //       icon: Icon(iconData),
-  //       iconSize: 64.0,
-  //       onPressed: onPressed,
-  //     );
-  // Stream<MediaState> get _mediaStateStream =>
-  //     Rx.combineLatest2<MediaItem?, Duration, MediaState>(
-  //         audioHandler.mediaItem,
-  //         AudioService.position,
-  //         (mediaItem, position) => MediaState(mediaItem, position));
 }

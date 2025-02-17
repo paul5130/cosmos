@@ -36,37 +36,46 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
     return Scaffold(
       body: mediaListAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stackTrace) => Center(child: Text("讀取失敗: $error")),
-        data: (mediaList) => NestedScrollView(
-          headerSliverBuilder: (context, innerBoxIsScrolled) => [
-            SliverAppBar(
-              title: const Text('Cosmoser'),
-              pinned: true,
-              floating: false,
-              bottom: TabBar(
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (error, stackTrace) => Center(child: Text("讀取失敗: $error")),
+          data: (mediaList) {
+            final audioList = mediaList;
+            final videoList =
+                mediaList.where((media) => media.videoId != null).toList();
+            return NestedScrollView(
+              headerSliverBuilder: (context, innerBoxIsScrolled) => [
+                SliverAppBar(
+                  title: const Text('Cosmoser'),
+                  pinned: true,
+                  floating: false,
+                  bottom: TabBar(
+                    controller: _tabController,
+                    tabs: const [
+                      Tab(
+                        icon: Icon(Icons.audiotrack_rounded),
+                        text: '音訊列表',
+                      ),
+                      Tab(
+                        icon: Icon(Icons.video_library_rounded),
+                        text: '影片列表',
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+              body: TabBarView(
                 controller: _tabController,
-                tabs: const [
-                  Tab(icon: Icon(Icons.audiotrack_rounded), text: '音訊列表'),
-                  Tab(icon: Icon(Icons.video_library_rounded), text: '影片列表'),
+                children: [
+                  AudioListScreen(
+                    audioList: audioList,
+                  ),
+                  VideoListScreen(
+                    videoList: videoList,
+                  ),
                 ],
               ),
-            ),
-          ],
-          body: TabBarView(
-            controller: _tabController,
-            children: [
-              AudioListScreen(
-                audioList: mediaList,
-              ),
-              VideoListScreen(
-                videoList:
-                    mediaList.where((media) => media.videoId != null).toList(),
-              ),
-            ],
-          ),
-        ),
-      ),
+            );
+          }),
     );
   }
 }

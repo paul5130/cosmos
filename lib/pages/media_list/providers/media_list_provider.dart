@@ -17,10 +17,8 @@ Future<List<HeHeMedia>> fetchMediaList(Ref ref) async {
   try {
     final jsonString = await ref.watch(gistClientProvider).fetchMediaListJson();
     final List<dynamic> jsonData = jsonDecode(jsonString);
-    final List<HeHeMedia> videoList = jsonData
-        .map((e) => HeHeMedia.fromJson(e))
-        .where((media) => media.videoId != null)
-        .toList();
+    final List<HeHeMedia> videoList =
+        jsonData.map((e) => HeHeMedia.fromJson(e)).toList();
     debugPrint(jsonString);
     await file.writeAsString(jsonString);
     return videoList;

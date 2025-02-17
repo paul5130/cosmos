@@ -1,3 +1,4 @@
+import 'package:cosmos/pages/audio_player/audio_player_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../../model/hehe_media.dart';
@@ -26,6 +27,12 @@ class AudioListScreen extends StatelessWidget {
             ),
             onTap: () {
               debugPrint('play audio${audio.name}');
+              // final index = videoList.indexOf(video);
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                    builder: (context) =>
+                        AudioPlayerScreen(audioList: audioList, index: index)),
+              );
             });
       }),
     );
