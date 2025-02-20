@@ -6,9 +6,8 @@ environment:
 description: A new Flutter project.
 dependencies:
   audio_service: ^0.18.17
-  background_downloader: ^8.9.4
+  audio_session: ^0.1.25
   copy_with_extension: '^6.0.1'
-  dio: '^5.8.0+1'
   equatable: '^2.0.7'
   flutter:
     sdk: flutter
@@ -38,7 +37,7 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/common/
+    - assets/audio/
 flutter_launcher_icons:
   android: true
   ios: true

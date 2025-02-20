@@ -1,15 +1,15 @@
 import 'package:audio_service/audio_service.dart';
+
 import 'package:cosmos/main.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
-import '../../model/hehe_media.dart';
-import '../video_player/widgets/seek_bar.dart';
+import '../../model/hehe_audio.dart';
+import 'audio/seek_bar.dart';
 import 'audio/media_state.dart';
 
 class AudioPlayerScreen extends StatefulWidget {
-  final List<HeHeMedia> audioList;
+  final List<HeHeAudio> audioList;
   final int index;
 
   const AudioPlayerScreen({
@@ -23,25 +23,23 @@ class AudioPlayerScreen extends StatefulWidget {
 }
 
 class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
-  late int _currentIndex;
   @override
   void initState() {
     super.initState();
-    _currentIndex = widget.index;
-    _initializeAudio();
+    audioPlayerHandler.setPlaylist(widget.audioList, widget.index);
   }
 
-  Future<void> _initializeAudio() async {
-    await audioPlayerHandler.setupAudio(
-      widget.audioList[_currentIndex],
-    );
+  @override
+  void dispose() {
+    audioPlayerHandler.stop();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Audio Service Demo'),
+        title: const Text('Audio Service'),
       ),
       body: Center(
         child: Column(
@@ -64,13 +62,13 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
                 return Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // _button(Icons.fast_rewind, audioHandler.rewind),
+                    _button(Icons.fast_rewind, audioHandler.rewind),
                     if (playing)
                       _button(Icons.pause, audioHandler.pause)
                     else
                       _button(Icons.play_arrow, audioHandler.play),
-                    // _button(Icons.stop, audioHandler.stop),
-                    // _button(Icons.fast_forward, audioHandler.fastForward),
+                    _button(Icons.stop, audioHandler.stop),
+                    _button(Icons.fast_forward, audioHandler.fastForward),
                   ],
                 );
               },
@@ -97,9 +95,7 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
               builder: (context, snapshot) {
                 final processingState =
                     snapshot.data ?? AudioProcessingState.idle;
-                return Text(
-                    // ignore: deprecated_member_use
-                    "Processing state: ${describeEnum(processingState)}");
+                return Text("Processing state: ${processingState.toString()}");
               },
             ),
           ],

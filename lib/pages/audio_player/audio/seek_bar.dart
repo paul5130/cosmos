@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-import '../../audio_player/audio/hidden_thumb_component_shape.dart';
+import 'hidden_thumb_component_shape.dart';
 
 class SeekBar extends StatefulWidget {
   final Duration duration;
