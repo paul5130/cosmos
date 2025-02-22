@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../model/hehe_audio.dart';
+import '../../model/hehe_audio.dart';
 
 part 'audio_list_provider.g.dart';
 

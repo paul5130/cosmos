@@ -26,7 +26,9 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
   @override
   void initState() {
     super.initState();
-    audioPlayerHandler.setPlaylist(widget.audioList, widget.index);
+    Future.delayed(Duration(milliseconds: 300), () {
+      audioPlayerHandler.setPlaylist(widget.audioList, widget.index);
+    });
   }
 
   @override
@@ -62,13 +64,13 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
                 return Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    _button(Icons.fast_rewind, audioHandler.rewind),
+                    _button(Icons.skip_previous, audioHandler.skipToPrevious),
                     if (playing)
                       _button(Icons.pause, audioHandler.pause)
                     else
                       _button(Icons.play_arrow, audioHandler.play),
                     _button(Icons.stop, audioHandler.stop),
-                    _button(Icons.fast_forward, audioHandler.fastForward),
+                    _button(Icons.skip_next, audioHandler.skipToNext),
                   ],
                 );
               },

@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:audio_service/audio_service.dart';
-// import 'package:audio_session/audio_session.dart';
+import 'package:audio_session/audio_session.dart';
 import 'package:flutter/material.dart';
 
 import 'package:just_audio/just_audio.dart';
@@ -13,7 +13,7 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
   int _currentIndex = 0;
   List<HeHeAudio> _audioList = [];
   AudioPlayerHandler() {
-    // _initAudioSession();
+    _initAudioSession();
     _player.playbackEventStream
         .map(
           _transformEvent,
@@ -27,11 +27,11 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
       }
     });
   }
-  // Future<void> _initAudioSession() async {
-  //   final session = await AudioSession.instance;
-  //   await session.configure(AudioSessionConfiguration.music());
-  //   await session.setActive(true);
-  // }
+  Future<void> _initAudioSession() async {
+    final session = await AudioSession.instance;
+    await session.configure(AudioSessionConfiguration.music());
+    await session.setActive(true);
+  }
 
   void setPlaylist(
     List<HeHeAudio> audioList,
@@ -113,15 +113,15 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
   PlaybackState _transformEvent(PlaybackEvent event) {
     return PlaybackState(
       controls: [
-        MediaControl.rewind,
+        MediaControl.skipToPrevious,
         if (_player.playing) MediaControl.pause else MediaControl.play,
         MediaControl.stop,
-        MediaControl.fastForward,
+        MediaControl.skipToNext,
       ],
       systemActions: const {
         MediaAction.seek,
-        MediaAction.seekForward,
-        MediaAction.seekBackward,
+        MediaAction.skipToNext,
+        MediaAction.skipToPrevious,
       },
       androidCompactActionIndices: const [0, 1, 3],
       processingState: {
