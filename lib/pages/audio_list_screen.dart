@@ -150,7 +150,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (context) => AudioPlayerScreen(
-                                audioList: mediaList,
+                                audioList: filteredList,
                                 index: index,
                               ),
                             ),
