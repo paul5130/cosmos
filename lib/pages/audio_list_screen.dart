@@ -127,7 +127,36 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         audio.index,
                       );
                       return ListTile(
-                        title: Text(audio.name),
+                        title: Row(
+                          children: [
+                            if (audio.index > 221)
+                              Padding(
+                                padding: const EdgeInsets.only(right: 8.0),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 6.0, vertical: 2.0),
+                                  decoration: BoxDecoration(
+                                    color: Colors.redAccent,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: const Text(
+                                    'NEW',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            Expanded(
+                              child: Text(
+                                audio.name,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
                         leading: const Icon(
                           Icons.music_video_rounded,
                           color: Colors.blueAccent,
@@ -146,7 +175,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               ),
                         ),
                         onTap: () {
-                          // debugPrint('play audio${audio.name}');
                           Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (context) => AudioPlayerScreen(
