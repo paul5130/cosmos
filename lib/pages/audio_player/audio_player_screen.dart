@@ -1,14 +1,16 @@
 import 'package:audio_service/audio_service.dart';
 
 import 'package:cosmos/main.dart';
+import 'package:cosmos/providers/audio_list/favorite_audio_list_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../../model/hehe_audio.dart';
 import 'audio/seek_bar.dart';
 import 'audio/media_state.dart';
 
-class AudioPlayerScreen extends StatefulWidget {
+class AudioPlayerScreen extends ConsumerStatefulWidget {
   final List<HeHeAudio> audioList;
   final int index;
 
@@ -19,10 +21,10 @@ class AudioPlayerScreen extends StatefulWidget {
   });
 
   @override
-  State<AudioPlayerScreen> createState() => _AudioPlayerScreenState();
+  ConsumerState<AudioPlayerScreen> createState() => _AudioPlayerScreenState();
 }
 
-class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
+class _AudioPlayerScreenState extends ConsumerState<AudioPlayerScreen> {
   @override
   void initState() {
     super.initState();
@@ -39,9 +41,32 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final favoriteIds = ref.watch(favoriteAudioListNotifierProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Audio Service'),
+        actions: [
+          StreamBuilder(
+            stream: audioHandler.mediaItem,
+            builder: (context, snapshot) {
+              final isFavorite =
+                  favoriteIds.contains(int.parse(snapshot.data?.id ?? '0'));
+              return IconButton(
+                icon: Icon(
+                  isFavorite ? Icons.favorite : Icons.favorite_border,
+                  color: isFavorite ? Colors.red : null,
+                ),
+                onPressed: () {
+                  ref
+                      .read(favoriteAudioListNotifierProvider.notifier)
+                      .toggleFavorite(
+                        int.parse(snapshot.data?.id ?? '0'),
+                      );
+                },
+              );
+            },
+          )
+        ],
       ),
       body: Center(
         child: Column(

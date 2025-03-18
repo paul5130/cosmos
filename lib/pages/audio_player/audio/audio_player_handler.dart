@@ -66,7 +66,7 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
     Duration duration,
   ) =>
       MediaItem(
-        id: audio.name,
+        id: audio.index.toString(),
         title: audio.name,
         artUri: null,
         duration: duration,
