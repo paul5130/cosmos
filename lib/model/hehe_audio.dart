@@ -9,18 +9,18 @@ part 'hehe_audio.g.dart';
 class HeHeAudio extends Equatable {
   const HeHeAudio({
     required this.index,
-    required this.filename,
+    required this.originalFilename,
+    required this.newFilename,
+    required this.pathname,
   });
   final int index;
-  final String filename;
-  String get name => filename.split('.').first.replaceAll('-星際隕石團隊', '');
+  final String originalFilename;
+  final String newFilename;
+  final String pathname;
 
   factory HeHeAudio.fromJson(Map<String, dynamic> srcJson) =>
       _$HeHeAudioFromJson(srcJson);
   Map<String, dynamic> toJson() => _$HeHeAudioToJson(this);
   @override
-  List<Object?> get props => [
-        index,
-        filename,
-      ];
+  List<Object?> get props => [index, originalFilename, newFilename, pathname];
 }

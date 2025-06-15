@@ -9,7 +9,11 @@ part of 'hehe_audio.dart';
 abstract class _$HeHeAudioCWProxy {
   HeHeAudio index(int index);
 
-  HeHeAudio filename(String filename);
+  HeHeAudio originalFilename(String originalFilename);
+
+  HeHeAudio newFilename(String newFilename);
+
+  HeHeAudio pathname(String pathname);
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `HeHeAudio(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -19,7 +23,9 @@ abstract class _$HeHeAudioCWProxy {
   /// ````
   HeHeAudio call({
     int index,
-    String filename,
+    String originalFilename,
+    String newFilename,
+    String pathname,
   });
 }
 
@@ -33,7 +39,14 @@ class _$HeHeAudioCWProxyImpl implements _$HeHeAudioCWProxy {
   HeHeAudio index(int index) => this(index: index);
 
   @override
-  HeHeAudio filename(String filename) => this(filename: filename);
+  HeHeAudio originalFilename(String originalFilename) =>
+      this(originalFilename: originalFilename);
+
+  @override
+  HeHeAudio newFilename(String newFilename) => this(newFilename: newFilename);
+
+  @override
+  HeHeAudio pathname(String pathname) => this(pathname: pathname);
 
   @override
 
@@ -45,17 +58,27 @@ class _$HeHeAudioCWProxyImpl implements _$HeHeAudioCWProxy {
   /// ````
   HeHeAudio call({
     Object? index = const $CopyWithPlaceholder(),
-    Object? filename = const $CopyWithPlaceholder(),
+    Object? originalFilename = const $CopyWithPlaceholder(),
+    Object? newFilename = const $CopyWithPlaceholder(),
+    Object? pathname = const $CopyWithPlaceholder(),
   }) {
     return HeHeAudio(
       index: index == const $CopyWithPlaceholder()
           ? _value.index
           // ignore: cast_nullable_to_non_nullable
           : index as int,
-      filename: filename == const $CopyWithPlaceholder()
-          ? _value.filename
+      originalFilename: originalFilename == const $CopyWithPlaceholder()
+          ? _value.originalFilename
           // ignore: cast_nullable_to_non_nullable
-          : filename as String,
+          : originalFilename as String,
+      newFilename: newFilename == const $CopyWithPlaceholder()
+          ? _value.newFilename
+          // ignore: cast_nullable_to_non_nullable
+          : newFilename as String,
+      pathname: pathname == const $CopyWithPlaceholder()
+          ? _value.pathname
+          // ignore: cast_nullable_to_non_nullable
+          : pathname as String,
     );
   }
 }
@@ -72,10 +95,14 @@ extension $HeHeAudioCopyWith on HeHeAudio {
 
 HeHeAudio _$HeHeAudioFromJson(Map<String, dynamic> json) => HeHeAudio(
       index: (json['index'] as num).toInt(),
-      filename: json['filename'] as String,
+      originalFilename: json['originalFilename'] as String,
+      newFilename: json['newFilename'] as String,
+      pathname: json['pathname'] as String,
     );
 
 Map<String, dynamic> _$HeHeAudioToJson(HeHeAudio instance) => <String, dynamic>{
       'index': instance.index,
-      'filename': instance.filename,
+      'originalFilename': instance.originalFilename,
+      'newFilename': instance.newFilename,
+      'pathname': instance.pathname,
     };

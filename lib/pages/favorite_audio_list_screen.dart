@@ -77,7 +77,7 @@ class FavoriteAudioListScreen extends ConsumerWidget {
                   Icons.music_video_rounded,
                   color: Colors.blueAccent,
                 ),
-                title: Text(audio.name),
+                title: Text(audio.originalFilename),
                 trailing: IconButton(
                   icon: const Icon(
                     Icons.favorite,

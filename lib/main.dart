@@ -1,5 +1,5 @@
 import 'package:audio_service/audio_service.dart';
-import 'package:cosmos/pages/audio_list_screen.dart';
+import 'package:cosmos/pages/home_screen.dart';
 import 'package:cosmos/pages/audio_player/audio/audio_player_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

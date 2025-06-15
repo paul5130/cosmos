@@ -45,7 +45,7 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
 
   Future<void> _setupMediaItem(HeHeAudio audio) async {
     try {
-      await _player.setAsset('assets/audio/${audio.filename}');
+      await _player.setAsset('assets/audio/${audio.pathname}');
       final duration = _player.duration;
       if (duration != null) {
         final currentaudioItem = _toMediaitem(
@@ -54,7 +54,7 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
         );
         mediaItem.add(currentaudioItem);
       }
-      debugPrint('Setting up media item ${audio.name}');
+      debugPrint('Setting up media item ${audio.originalFilename}');
       await _player.play();
     } catch (e) {
       debugPrint('Error setting up media item ${e.toString()}');
@@ -67,7 +67,7 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
   ) =>
       MediaItem(
         id: audio.index.toString(),
-        title: audio.name,
+        title: audio.originalFilename,
         artUri: null,
         duration: duration,
       );
